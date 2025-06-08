@@ -1,0 +1,42 @@
+{
+    # Global options
+    auto_https off
+    admin off
+}
+
+:80 {
+    # Enable FrankenPHP
+    php_server
+
+    # Set the document root
+    root * /app/public
+
+    # Enable compression
+    encode gzip
+
+    # Handle PHP files
+    route {
+        # Try files and directories
+        try_files {path} {path}/index.php
+        
+        # Handle PHP files
+        php_fastcgi unix//var/run/php-fpm.sock {
+            # Pass the script filename
+            env SCRIPT_FILENAME {root}{path}
+        }
+        
+        # Serve static files
+        file_server
+    }
+
+    # Laravel specific rewrites
+    rewrite {
+        to {path} {path}/ /index.php?{query}
+    }
+
+    # Log to stdout for Coolify to capture
+    log {
+        output stdout
+        format console
+    }
+}
