@@ -14,25 +14,17 @@
     # Enable compression
     encode gzip
 
+    # Laravel specific handling
+    try_files {path} {path}/ /index.php?{query}
+    
     # Handle PHP files
-    route {
-        # Try files and directories
-        try_files {path} {path}/index.php
-        
-        # Handle PHP files
-        php_fastcgi unix//var/run/php-fpm.sock {
-            # Pass the script filename
-            env SCRIPT_FILENAME {root}{path}
-        }
-        
-        # Serve static files
-        file_server
+    php_fastcgi unix//var/run/php-fpm.sock {
+        resolve_root_symlink
+        root /app/public
     }
-
-    # Laravel specific rewrites
-    rewrite {
-        to {path} {path}/ /index.php?{query}
-    }
+    
+    # Serve static files
+    file_server
 
     # Log to stdout for Coolify to capture
     log {
