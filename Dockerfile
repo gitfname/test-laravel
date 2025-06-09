@@ -16,7 +16,7 @@ WORKDIR /var/www/html
 
 # Copy and install Composer dependencies first
 COPY composer.json composer.lock ./
-COPY --no-cache-dir . .
+COPY . .
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
